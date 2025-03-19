@@ -16,7 +16,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.stealth.chat.model.Message
+import com.stealth.chat.ui.chat.uicomponent.ChatBubble
 import com.stealth.chat.ui.chat.uicomponent.ChatTopBar
+import com.stealth.chat.ui.chat.uicomponent.MessageInput
 
 @Composable
 fun ChatScreen(viewModel: ChatViewModel) {
@@ -44,76 +46,6 @@ fun ChatScreen(viewModel: ChatViewModel) {
                     ChatBubble(message)
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun ChatBubble(message: Message) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp)
-            .imePadding(),
-        horizontalArrangement = if (message.isSentByMe) Arrangement.End else Arrangement.Start
-    ) {
-        Box(
-            modifier = Modifier
-                .background(
-                    color = if (message.isSentByMe) Color(0xFFDCF8C6) else Color(0xFFEFEFEF),
-                    shape = RoundedCornerShape(
-                        topStart = if (message.isSentByMe) 12.dp else 0.dp,
-                        topEnd = if (message.isSentByMe) 0.dp else 12.dp,
-                        bottomStart = 12.dp,
-                        bottomEnd = 12.dp
-                    )
-                )
-                .padding(horizontal = 12.dp, vertical = 8.dp)
-        ) {
-            Text(
-                text = message.text,
-                color = Color.Black,
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-    }
-}
-
-@Composable
-fun MessageInput(onSend: (String) -> Unit) {
-    var textState by remember { mutableStateOf(TextFieldValue("")) }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        TextField(
-            value = textState,
-            onValueChange = { textState = it },
-            modifier = Modifier
-                .weight(1f)
-                .padding(end = 10.dp),
-            placeholder = { Text("Type a message...") },
-            shape = RoundedCornerShape(20.dp),
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
-                errorIndicatorColor = Color.Transparent,
-                focusedContainerColor = Color(0xFFF0F0F0),
-                unfocusedContainerColor = Color(0xFFF0F0F0),
-                disabledContainerColor = Color(0xFFF0F0F0)
-            )
-        )
-        Button(
-            onClick = {
-                onSend(textState.text)
-                textState = TextFieldValue("")
-            }
-        ) {
-            Text("Send")
         }
     }
 }
