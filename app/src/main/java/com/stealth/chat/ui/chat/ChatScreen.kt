@@ -21,7 +21,10 @@ import com.stealth.chat.ui.chat.uicomponent.ChatTopBar
 import com.stealth.chat.ui.chat.uicomponent.MessageInput
 
 @Composable
-fun ChatScreen(viewModel: ChatViewModel) {
+fun ChatScreen(
+    viewModel: ChatViewModel,
+    onAttachImage: () -> Unit
+) {
     val chat by viewModel.chat.collectAsState()
 
     Scaffold(
@@ -31,10 +34,12 @@ fun ChatScreen(viewModel: ChatViewModel) {
             }
         },
         bottomBar = {
-            MessageInput(onSend = viewModel::sendMessage)
+            MessageInput(
+                onSend = viewModel::sendMessage,
+                onAttachImage = onAttachImage
+            )
         }
     ) { innerPadding ->
-        // Message list body
         chat?.let {
             LazyColumn(
                 modifier = Modifier
@@ -53,5 +58,5 @@ fun ChatScreen(viewModel: ChatViewModel) {
 @Preview
 @Composable
 fun ChatScreenPreview() {
-    ChatScreen(viewModel = ChatViewModel())
+    ChatScreen(viewModel = ChatViewModel(), onAttachImage = {})
 }

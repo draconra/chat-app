@@ -12,7 +12,6 @@ class ChatViewModel : ViewModel() {
     val chat: StateFlow<Chat?> = _chat
 
     fun setChatInfo(chat: Chat) {
-        // Simulate initial messages directly into Chat object
         val chatWithMessages = chat.copy(
             message = listOf(
                 Message(1, "Hi from chat ${chat.id}", isSentByMe = false),
@@ -20,6 +19,19 @@ class ChatViewModel : ViewModel() {
             )
         )
         _chat.value = chatWithMessages
+    }
+
+    fun sendImage(imageUri: String) {
+        val currentChat = _chat.value
+        if (currentChat != null) {
+            val newMessages = currentChat.message + Message(
+                id = currentChat.message.size + 1,
+                text = "",
+                isSentByMe = true,
+                imageUrl = imageUri
+            )
+            _chat.value = currentChat.copy(message = newMessages)
+        }
     }
 
     fun sendMessage(text: String) {
