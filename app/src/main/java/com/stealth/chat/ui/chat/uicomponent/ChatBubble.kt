@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.stealth.chat.model.Message
 
@@ -61,6 +62,15 @@ fun ChatBubble(message: Message) {
                         text = message.text,
                         color = Color.Black,
                         style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+
+                if (message.disappearAfterMillis != null) {
+                    Text(
+                        text = "Disappears in ${(message.disappearAfterMillis / 1000)}s",
+                        fontSize = 10.sp,
+                        color = Color.DarkGray,
+                        modifier = Modifier.padding(top = 4.dp)
                     )
                 }
             }

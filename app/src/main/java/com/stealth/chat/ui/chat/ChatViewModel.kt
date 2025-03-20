@@ -1,10 +1,13 @@
 package com.stealth.chat.ui.chat
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.stealth.chat.model.Chat
 import com.stealth.chat.model.Message
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class ChatViewModel : ViewModel() {
 
@@ -34,20 +37,39 @@ class ChatViewModel : ViewModel() {
         }
     }
 
-    fun sendMessage(text: String) {
+    fun sendMessage(text: String, disappearAfterMillis: Long? = null) {
         if (text.isNotBlank()) {
             val currentChat = _chat.value
             if (currentChat != null) {
-                val newMessages = currentChat.message + Message(
+                val newMsg = Message(
                     id = currentChat.message.size + 1,
                     text = text,
-                    isSentByMe = true
+                    isSentByMe = true,
+                    disappearAfterMillis = disappearAfterMillis
                 )
+                val newMessages = currentChat.message + newMsg
                 _chat.value = currentChat.copy(message = newMessages)
+
+                disappearAfterMillis?.let {
+                    startDisappearTimer(newMsg.id, it)
+                }
 
                 autoReply()
             }
         }
+    }
+
+    private fun startDisappearTimer(messageId: Int, duration: Long) {
+        viewModelScope.launch {
+            delay(duration)
+            removeMessage(messageId)
+        }
+    }
+
+    private fun removeMessage(messageId: Int) {
+        val currentChat = _chat.value ?: return
+        val updatedMessages = currentChat.message.filterNot { it.id == messageId }
+        _chat.value = currentChat.copy(message = updatedMessages)
     }
 
     private fun autoReply() {
