@@ -5,59 +5,83 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.stealth.chat.model.Chat
 import com.stealth.chat.ui.chat.list.ChatListScreen
 import com.stealth.chat.ui.chat.list.ChatListViewModel
+import com.stealth.chat.ui.chat.newchat.NewChatBottomSheetDialog
+import com.stealth.chat.ui.home.uicomponent.ChatTopBar
 import com.stealth.chat.ui.theme.ChatAppTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
     viewModel: ChatListViewModel,
     onChatClick: (Chat) -> Unit,
+    onNewChatClick: (Chat) -> Unit = {}
 ) {
-    val chats by viewModel.chats.collectAsState()
+    val chats by viewModel.filteredChats.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
+    val isSearchActive by viewModel.isSearchActive.collectAsState()
+    val allContacts by viewModel.chats.collectAsState()
+
+    var isNewChatSheetOpen by remember { mutableStateOf(false) }
 
     ChatAppTheme {
-        Scaffold(modifier = Modifier.fillMaxSize(),
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
             topBar = {
-                TopAppBar(
-                    title = { Text("Chats") },
-                    actions = {
-                        IconButton(onClick = { /* Search click */ }) {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = "Search",
-                                tint = MaterialTheme.colorScheme.onPrimary
-                            )
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                        actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-                    )
+                ChatTopBar(
+                    isSearchActive = isSearchActive,
+                    searchQuery = searchQuery,
+                    onQueryChange = viewModel::updateSearchQuery,
+                    onToggleSearch = {
+                        if (isSearchActive) viewModel.clearSearch()
+                        else viewModel.toggleSearchBar()
+                    }
                 )
-            }) { innerPadding ->
+            },
+            floatingActionButton = {
+                FloatingActionButton(
+                    modifier = Modifier.padding(bottom = 50.dp),
+                    onClick = { isNewChatSheetOpen = true },
+                    shape = CircleShape,
+                    containerColor = MaterialTheme.colorScheme.primary
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Email,
+                        contentDescription = "Start New Chat"
+                    )
+                }
+
+                if (isNewChatSheetOpen) {
+                    NewChatBottomSheetDialog(
+                        contacts = allContacts,
+                        onContactClick = {
+                            isNewChatSheetOpen = false
+                            onNewChatClick(it)
+                        },
+                        onDismiss = { isNewChatSheetOpen = false }
+                    )
+                }
+            }
+        ) { innerPadding ->
             Box(modifier = Modifier.padding(innerPadding)) {
-                ChatListScreen(chats = chats, onChatClick = { chat ->
-                    onChatClick(chat)
-                })
+                ChatListScreen(chats = chats, onChatClick = onChatClick)
             }
         }
     }

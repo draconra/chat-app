@@ -7,7 +7,7 @@ data class Chat(
     val name: String,
     val lastMessage: String,
     val avatarUrl: String,
-    val timestamp: LocalDateTime,
+    val timestamp: String,
     val isUnread: Boolean,
     val message: List<Message> = emptyList()
 )

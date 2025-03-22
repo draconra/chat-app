@@ -1,7 +1,5 @@
 package com.stealth.chat.ui.chat.list
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -29,10 +27,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.stealth.chat.model.Chat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ChatListScreen(chats: List<Chat>, onChatClick: (Chat) -> Unit) {
     LazyColumn(
@@ -46,7 +41,6 @@ fun ChatListScreen(chats: List<Chat>, onChatClick: (Chat) -> Unit) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ChatItem(chat: Chat, onChatClick: (Chat) -> Unit) {
     Row(modifier = Modifier
@@ -83,7 +77,7 @@ fun ChatItem(chat: Chat, onChatClick: (Chat) -> Unit) {
         // Timestamp & Unread Indicator
         Column(horizontalAlignment = Alignment.End) {
             Text(
-                text = formatDate(chat.timestamp), color = Color.Gray
+                text = "", color = Color.Gray
             )
             if (chat.isUnread) {
                 Spacer(Modifier.size(5.dp))
@@ -97,13 +91,6 @@ fun ChatItem(chat: Chat, onChatClick: (Chat) -> Unit) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-fun formatDate(dateTime: LocalDateTime): String {
-    val formatter = DateTimeFormatter.ofPattern("hh:mm a") // e.g., "10:30 AM"
-    return dateTime.format(formatter)
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun PreviewChatListScreen() {

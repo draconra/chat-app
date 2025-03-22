@@ -20,21 +20,23 @@ class HomeFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View = ComposeView(requireContext())
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         (view as ComposeView).setContent {
-            HomeScreen(chatListViewModel) { selectedChat ->
+            HomeScreen(viewModel = chatListViewModel, onChatClick = { selectedChat ->
                 val chatJson = Gson().toJson(selectedChat)
                 val intent = Intent(requireContext(), ChatActivity::class.java).apply {
                     putExtra("chatData", chatJson)
                 }
                 startActivity(intent)
-            }
+            }, onNewChatClick = { chat ->
+                val intent = Intent(context, ChatActivity::class.java)
+                intent.putExtra("chatData", Gson().toJson(chat))
+                startActivity(intent)
+            })
         }
     }
 }
