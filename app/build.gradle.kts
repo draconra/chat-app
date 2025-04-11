@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.firebase)
 }
 
 android {
@@ -70,4 +71,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.coil.compose)
     implementation(libs.gson)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
 }
