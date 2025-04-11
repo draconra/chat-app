@@ -34,8 +34,15 @@ jobs:
           api-level: 34
           build-tools: 34.0.0
 
-      - name: Setup gradle
-        uses: gradle/actions/setup-gradle@v4
+      - name: Generate Gradle Wrapper (if missing)
+        run: |
+          if [ ! -f ./gradlew ]; then
+          echo "Gradle wrapper missing, generating..."
+          gradle wrapper
+          fi
+
+      - name: Grant execute permission to Gradle wrapper
+        run: chmod +x ./gradlew
 
       - name: Cache Gradle packages
         uses: actions/cache@v4
