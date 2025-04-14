@@ -20,7 +20,7 @@ foundationAndroid = "1.7.8"
 material3Android = "1.3.2"
 uiToolingPreviewAndroid = "1.7.8"
 lifecycleRuntimeKtx = "2.6.1"
-activityCompose = "1.8.0"
+activityCompose = "1.10.1"
 composeBom = "2024.04.01"
 firebase = "4.4.2"
 
