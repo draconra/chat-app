@@ -13,7 +13,12 @@ android {
         applicationId = "com.stealth.chat"
         minSdk = 24
         targetSdk = 35
-        versionCode = project.findProperty("BUILD_NUMBER")?.toString()?.toIntOrNull() ?: 1
+        versionCode = try {
+            project.findProperty("BUILD_NUMBER")?.toString()?.toInt() ?: 1
+        } catch (e: NumberFormatException) {
+            println("Warning: BUILD_NUMBER is not a valid integer. Using default value 1.")
+            1
+        }
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
