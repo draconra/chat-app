@@ -9,6 +9,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -25,7 +26,8 @@ fun ChatTopBar(
     isSearchActive: Boolean,
     searchQuery: String,
     onQueryChange: (String) -> Unit,
-    onToggleSearch: () -> Unit
+    onToggleSearch: () -> Unit,
+    onNewChatClick: () -> Unit
 ) {
     TopAppBar(
         title = {
@@ -44,6 +46,14 @@ fun ChatTopBar(
             }
         },
         actions = {
+            if (!isSearchActive) {
+                IconButton(onClick = onNewChatClick) {
+                    Icon(
+                        imageVector = Icons.Default.Email,
+                        contentDescription = "New Message"
+                    )
+                }
+            }
             IconButton(onClick = onToggleSearch) {
                 Icon(
                     imageVector = if (isSearchActive) Icons.Default.Close else Icons.Default.Search,

@@ -52,21 +52,11 @@ fun HomeScreen(
                     onToggleSearch = {
                         if (isSearchActive) viewModel.clearSearch()
                         else viewModel.toggleSearchBar()
+                    },
+                    onNewChatClick = {
+                        isNewChatSheetOpen = true
                     }
                 )
-            },
-            floatingActionButton = {
-                FloatingActionButton(
-                    modifier = Modifier.padding(bottom = 50.dp),
-                    onClick = { isNewChatSheetOpen = true },
-                    shape = CircleShape,
-                    containerColor = MaterialTheme.colorScheme.primary
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Email,
-                        contentDescription = "Start New Chat"
-                    )
-                }
 
                 if (isNewChatSheetOpen) {
                     NewChatBottomSheetDialog(
@@ -78,7 +68,7 @@ fun HomeScreen(
                         onDismiss = { isNewChatSheetOpen = false }
                     )
                 }
-            }
+            },
         ) { innerPadding ->
             Box(modifier = Modifier.padding(innerPadding)) {
                 ChatListScreen(chats = chats, onChatClick = onChatClick)

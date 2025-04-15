@@ -40,10 +40,9 @@ class MainActivity : AppCompatActivity() {
             ChatAppTheme {
                 var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
 
-                NavigationBar(modifier = Modifier.height(58.dp)) {
+                NavigationBar {
                     tabs.forEachIndexed { index, item ->
                         NavigationBarItem(
-                            modifier = Modifier.height(20.dp),
                             icon = { Icon(item.icon, contentDescription = item.label) },
                             label = { Text(item.label) },
                             selected = selectedTabIndex == index,
