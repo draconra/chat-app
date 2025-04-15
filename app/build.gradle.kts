@@ -74,4 +74,5 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.bcrypt)
+    implementation(libs.font.awesome)
 }
