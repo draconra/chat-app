@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.firebase)
+    kotlin("kapt")
 }
 
 android {
@@ -75,4 +76,11 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.bcrypt)
     implementation(libs.font.awesome)
+    implementation(libs.okhttp)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 }
