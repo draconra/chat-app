@@ -16,16 +16,17 @@
         android:theme="@style/Theme.ChatApp"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.auth.PinActivity"
             android:exported="true"
             android:label="@string/title_activity_chat"
             android:theme="@style/Theme.ChatApp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".MainActivity" />
         <activity
             android:name=".ui.chat.ChatActivity"
             android:exported="true"
