@@ -19,8 +19,8 @@ class SettingsPreferenceManager @Inject constructor(
     }
 
     val baseUrl: Flow<String> =
-        context.settingsDataStore.data.map { it[BASE_URL_KEY] ?: "https://default.url" }
-    val username: Flow<String> = context.settingsDataStore.data.map { it[USERNAME_KEY] ?: "admin" }
+        context.settingsDataStore.data.map { it[BASE_URL_KEY] ?: "https://2ab8-182-253-57-146.ngrok-free.app" }
+    val username: Flow<String> = context.settingsDataStore.data.map { it[USERNAME_KEY] ?: "user@backdoor.secure" }
 
     suspend fun setBaseUrl(value: String) {
         context.settingsDataStore.edit { prefs ->

@@ -1,5 +1,6 @@
 package com.stealth.chat.di
 
+import com.stealth.chat.data.local.SettingsPreferenceManager
 import com.stealth.chat.data.local.TokenManager
 import com.stealth.chat.data.remote.*
 import com.stealth.chat.network.ChatWebSocketListener
@@ -18,12 +19,15 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "http://homelab.chestnut-snake.ts.net:3000"
-
     @Provides
     @Singleton
     fun provideTokenProvider(tokenManager: TokenManager): TokenProvider =
         DataStoreTokenProvider(tokenManager)
+
+    @Provides
+    @Singleton
+    fun provideBaseUrlProvider(settingsPrefs: SettingsPreferenceManager): BaseUrlProvider =
+        DataStoreBaseUrlProvider(settingsPrefs)
 
     @Provides
     @Singleton
@@ -40,9 +44,13 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(client: OkHttpClient): Retrofit {
+    fun provideRetrofit(
+        client: OkHttpClient,
+        baseUrlProvider: BaseUrlProvider
+    ): Retrofit {
+        val baseUrl = kotlinx.coroutines.runBlocking { baseUrlProvider.getBaseUrl() }
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(baseUrl)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -64,13 +72,19 @@ object NetworkModule {
     fun provideWebSocket(
         client: OkHttpClient,
         tokenProvider: TokenProvider,
-        listener: ChatWebSocketListener
+        listener: ChatWebSocketListener,
+        baseUrlProvider: BaseUrlProvider
     ): WebSocket {
+        val wsUrl = kotlinx.coroutines.runBlocking {
+            baseUrlProvider.getBaseUrl().replace("https", "wss") + "/api/chat/ws"
+        }
+
         val request = Request.Builder()
-            .url("wss://yourserver.com/chat") // Replace this with real WS URL
+            .url(wsUrl)
             .addHeader("Authorization", "Bearer ${tokenProvider.getToken()}")
             .build()
 
         return client.newWebSocket(request, listener)
     }
 }
+

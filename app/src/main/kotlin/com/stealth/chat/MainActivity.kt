@@ -29,7 +29,7 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        loadFragment(tabs.first().fragment)
+        loadFragment(tabs.first().fragmentFactory())
         setupBottomNavigation()
     }
 
@@ -48,7 +48,7 @@ class MainActivity : BaseActivity() {
                             onClick = {
                                 if (selectedTabIndex != index) {
                                     selectedTabIndex = index
-                                    loadFragment(item.fragment)
+                                    loadFragment(item.fragmentFactory())
                                 }
                             }
                         )

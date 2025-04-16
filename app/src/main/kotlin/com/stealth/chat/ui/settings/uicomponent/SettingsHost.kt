@@ -1,6 +1,8 @@
 package com.stealth.chat.ui.settings.uicomponent
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,9 +13,20 @@ import com.stealth.chat.ui.settings.SettingsViewModel
 
 @Composable
 fun SettingsHost(viewModel: SettingsViewModel = hiltViewModel()) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarMessage by viewModel.snackbarMessage.collectAsState()
     var isVerified by remember { mutableStateOf(false) }
     var showBaseUrlSheet by remember { mutableStateOf(false) }
     var showUsernameSheet by remember { mutableStateOf(false) }
+
+    if (snackbarMessage != null) {
+        LaunchedEffect(snackbarMessage) {
+            snackbarMessage?.let {
+                snackbarHostState.showSnackbar(it)
+                viewModel.clearSnackbar()
+            }
+        }
+    }
 
     if (isVerified) {
         val baseUrl by viewModel.baseUrl.collectAsState()
@@ -23,7 +36,9 @@ fun SettingsHost(viewModel: SettingsViewModel = hiltViewModel()) {
             baseUrl = baseUrl,
             username = username,
             onEditBaseUrl = { showBaseUrlSheet = true },
-            onEditUsername = { showUsernameSheet = true }
+            onEditUsername = { showUsernameSheet = true },
+            onConnect = viewModel::connect,
+            snackbarHostState = snackbarHostState
         )
 
         if (showBaseUrlSheet) {
