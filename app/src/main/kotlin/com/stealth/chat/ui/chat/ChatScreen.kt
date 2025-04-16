@@ -28,6 +28,8 @@ fun ChatScreen(
     val chat by viewModel.chat.collectAsState()
 
     Scaffold(
+        modifier = Modifier
+            .padding(WindowInsets.statusBars.union(WindowInsets.navigationBars).asPaddingValues()),
         topBar = {
             chat?.let {
                 ChatTopBar(chatName = it.name, avatarUrl = it.avatarUrl)
@@ -44,7 +46,8 @@ fun ChatScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
+                    .padding(innerPadding)
+                    .padding(bottom = WindowInsets.ime.asPaddingValues().calculateBottomPadding()),
                 reverseLayout = true
             ) {
                 items(it.message.reversed()) { message ->
