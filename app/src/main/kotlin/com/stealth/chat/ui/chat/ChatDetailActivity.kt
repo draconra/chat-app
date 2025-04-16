@@ -2,7 +2,6 @@ package com.stealth.chat.ui.chat
 
 import android.os.Build
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -10,9 +9,10 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import com.google.gson.Gson
 import com.stealth.chat.model.Chat
+import com.stealth.chat.ui.core.BaseActivity
 import com.stealth.chat.ui.theme.ChatAppTheme
 
-class ChatActivity : ComponentActivity() {
+class ChatActivity : BaseActivity() {
 
     private val chatViewModel: ChatViewModel by viewModels()
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
