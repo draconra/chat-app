@@ -13,7 +13,9 @@ import androidx.fragment.app.viewModels
 import com.google.gson.Gson
 import com.stealth.chat.ui.chat.ChatActivity
 import com.stealth.chat.ui.chat.list.ChatListViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private val chatListViewModel: ChatListViewModel by viewModels()

@@ -2,7 +2,7 @@
 
 package com.stealth.chat.ui.settings.uicomponent
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,18 +11,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Divider
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -30,7 +30,9 @@ fun SettingsScreen(
     baseUrl: String,
     username: String,
     onEditBaseUrl: () -> Unit,
-    onEditUsername: () -> Unit
+    onEditUsername: () -> Unit,
+    onConnect: () -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
     val versionName = "1.0.0"
     val buildNumber = "14"
@@ -44,26 +46,38 @@ fun SettingsScreen(
                     titleContentColor = MaterialTheme.colorScheme.onPrimary,
                 )
             )
-        }
+        },
     ) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding).padding(16.dp)) {
-            Text("Version: $versionName (Build $buildNumber)", style = MaterialTheme.typography.bodyMedium)
+        Box(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Column {
 
-            Spacer(Modifier.height(16.dp))
-            SettingItem(Icons.Default.Build, "Change Base URL: $baseUrl", onEditBaseUrl)
-            SettingItem(Icons.Default.Person, "Change Username: $username", onEditUsername)
+                Text(
+                    "Version: $versionName (Build $buildNumber)",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                Spacer(Modifier.height(16.dp))
+                SettingItem(Icons.Default.Build, "Change Base URL: $baseUrl", onEditBaseUrl)
+                SettingItem(Icons.Default.Person, "Change Username: $username", onEditUsername)
+
+                Spacer(Modifier.height(24.dp))
+
+                Button(
+                    onClick = onConnect,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Connect to Server")
+                }
+            }
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
         }
     }
-}
-
-@Composable
-fun SettingItem(icon: ImageVector, title: String, onClick: () -> Unit) {
-    ListItem(
-        leadingContent = { Icon(icon, contentDescription = null) },
-        headlineContent = { Text(title) },
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-    )
-    Divider()
 }
