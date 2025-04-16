@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,6 +40,7 @@ fun MessageInput(
 ) {
     var textState by remember { mutableStateOf(TextFieldValue("")) }
     var animateClick by remember { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     // Animate scale on click
     val scale by animateFloatAsState(
@@ -101,6 +103,7 @@ fun MessageInput(
         IconButton(
             onClick = {
                 onSend(textState.text, 5000L)
+                keyboardController?.hide()
                 textState = TextFieldValue("")
             },
             enabled = textState.text.isNotBlank()
