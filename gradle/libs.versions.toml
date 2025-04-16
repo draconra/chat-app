@@ -8,7 +8,6 @@ firebaseBom = "33.12.0"
 fontAwesome = "1.1.1"
 gson = "2.11.0"
 hiltAndroid = "2.50"
-hiltCompiler = "2.50"
 kotlin = "2.0.21"
 coreKtx = "1.10.1"
 junit = "4.13.2"
@@ -44,7 +43,7 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 font-awesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "fontAwesome" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltCompiler" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -78,5 +77,5 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 firebase = { id = "com.google.gms.google-services", version.ref = "firebase"}
-kotlin-kapt = {id = "kotlin-kapt"}
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 

@@ -3,7 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.firebase)
-    alias(libs.plugins.kotlin.kapt)
+    kotlin("kapt")
+    alias(libs.plugins.hilt)
 }
 
 android {
