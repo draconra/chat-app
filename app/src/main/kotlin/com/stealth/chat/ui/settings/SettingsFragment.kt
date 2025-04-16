@@ -4,10 +4,15 @@ import android.os.Bundle
 import android.view.View
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.stealth.chat.ui.settings.uicomponent.SettingsHost
 import com.stealth.chat.ui.theme.ChatAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SettingsFragment : Fragment() {
+
+    private val viewModel: SettingsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: android.view.LayoutInflater,
@@ -17,7 +22,7 @@ class SettingsFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 ChatAppTheme {
-                    SettingsHost()
+                    SettingsHost(viewModel = viewModel)
                 }
             }
         }

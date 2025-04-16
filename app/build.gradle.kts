@@ -87,6 +87,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.retrofit)
