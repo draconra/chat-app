@@ -14,7 +14,9 @@ import androidx.fragment.app.Fragment
 import com.stealth.chat.ui.bottomnav.BottomNavItem
 import com.stealth.chat.ui.core.BaseActivity
 import com.stealth.chat.ui.theme.ChatAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : BaseActivity() {
 
     private val tabs = listOf(
