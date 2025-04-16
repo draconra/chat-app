@@ -1,9 +1,6 @@
 package com.stealth.chat
 
-import android.os.Build
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -12,14 +9,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import com.stealth.chat.ui.bottomnav.BottomNavItem
+import com.stealth.chat.ui.core.BaseActivity
 import com.stealth.chat.ui.theme.ChatAppTheme
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private val tabs = listOf(
         BottomNavItem.Chats,
@@ -29,9 +25,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.setDecorFitsSystemWindows(false)
-        }
         setContentView(R.layout.activity_main)
 
         loadFragment(tabs.first().fragment)
