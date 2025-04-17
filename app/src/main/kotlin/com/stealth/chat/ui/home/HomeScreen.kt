@@ -35,10 +35,6 @@ fun HomeScreen(
 
     var isNewChatSheetOpen by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        viewModel.fetchMessages()
-    }
-
     ChatAppTheme {
         Scaffold(
             modifier = Modifier.fillMaxSize(),

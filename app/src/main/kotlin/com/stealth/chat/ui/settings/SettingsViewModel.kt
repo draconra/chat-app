@@ -30,7 +30,7 @@ class SettingsViewModel @Inject constructor(
     val baseUrl = settingsPrefs.baseUrl.stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
-        "https://2ab8-182-253-57-146.ngrok-free.app"
+        "https://c0b3-182-253-57-146.ngrok-free.app"
     )
 
     val username = settingsPrefs.username.stateIn(
@@ -56,7 +56,7 @@ class SettingsViewModel @Inject constructor(
             val result = apiService.login(LoginRequest(email = newUsername, pin = "123456"))
             if (result.isSuccessful) {
                 result.body()?.let {
-                    tokenManager.saveTokens(it.access_token, it.refresh_token)
+                    tokenManager.saveTokens(it.accessToken, it.refreshToken)
                     val currentBaseUrl = settingsPrefs.baseUrl.first()
                     webSocketManager.connect(currentBaseUrl)
                 }
@@ -72,7 +72,7 @@ class SettingsViewModel @Inject constructor(
             val result = apiService.login(LoginRequest(email = currentUsername, pin = "123456"))
             if (result.isSuccessful) {
                 result.body()?.let {
-                    tokenManager.saveTokens(it.access_token, it.refresh_token)
+                    tokenManager.saveTokens(it.accessToken, it.refreshToken)
                     webSocketManager.connect(currentBaseUrl)
                     _snackbarMessage.value = "Connected to server ✅"
                 }

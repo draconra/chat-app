@@ -1,5 +1,6 @@
 package com.stealth.chat.ui.chat.uicomponent
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,7 +23,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.stealth.chat.model.Message
+import com.stealth.chat.util.DateTimeUtils
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
+@SuppressLint("NewApi")
 @Composable
 fun ChatBubble(message: Message) {
     Row(
@@ -64,15 +70,20 @@ fun ChatBubble(message: Message) {
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
-
-                if (message.disappearAfterMillis != null) {
-                    Text(
-                        text = "Disappears in ${(message.disappearAfterMillis / 1000)}s",
-                        fontSize = 10.sp,
-                        color = Color.DarkGray,
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
-                }
+                Text(
+                    text = DateTimeUtils.formatTime(message.createdAt),
+                    fontSize = 10.sp,
+                    color = Color.DarkGray,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+//                if (message.disappearAfterMillis != null) {
+//                    Text(
+//                        text = "Disappears in ${(message.disappearAfterMillis / 1000)}s",
+//                        fontSize = 10.sp,
+//                        color = Color.DarkGray,
+//                        modifier = Modifier.padding(top = 4.dp)
+//                    )
+//                }
             }
         }
     }

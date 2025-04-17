@@ -11,7 +11,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.gson.Gson
-import com.stealth.chat.ui.chat.ChatActivity
+import com.stealth.chat.ui.chat.ChatDetailActivity
 import com.stealth.chat.ui.chat.list.ChatListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,12 +30,12 @@ class HomeFragment : Fragment() {
         (view as ComposeView).setContent {
             HomeScreen(viewModel = chatListViewModel, onChatClick = { selectedChat ->
                 val chatJson = Gson().toJson(selectedChat)
-                val intent = Intent(requireContext(), ChatActivity::class.java).apply {
+                val intent = Intent(requireContext(), ChatDetailActivity::class.java).apply {
                     putExtra("chatData", chatJson)
                 }
                 startActivity(intent)
             }, onNewChatClick = { chat ->
-                val intent = Intent(context, ChatActivity::class.java)
+                val intent = Intent(context, ChatDetailActivity::class.java)
                 intent.putExtra("chatData", Gson().toJson(chat))
                 startActivity(intent)
             })

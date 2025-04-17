@@ -48,7 +48,7 @@ fun ChatItem(chat: Chat, onChatClick: (Chat) -> Unit) {
         .clickable { onChatClick(chat) }
         .padding(10.dp),
         verticalAlignment = Alignment.CenterVertically) {
-        // Avatar
+
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current).data(chat.avatarUrl).crossfade(true)
                 .build(),

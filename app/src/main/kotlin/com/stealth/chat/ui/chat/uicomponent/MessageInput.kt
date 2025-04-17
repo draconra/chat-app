@@ -35,7 +35,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun MessageInput(
-    onSend: (String, Long?) -> Unit,
+    onSend: (String) -> Unit,
     onAttachImage: () -> Unit = {}
 ) {
     var textState by remember { mutableStateOf(TextFieldValue("")) }
@@ -102,7 +102,7 @@ fun MessageInput(
         // 🚀 Send Icon Button (Outside TextField)
         IconButton(
             onClick = {
-                onSend(textState.text, 5000L)
+                onSend(textState.text)
                 keyboardController?.hide()
                 textState = TextFieldValue("")
             },
@@ -121,7 +121,7 @@ fun MessageInput(
 @Preview(showBackground = true)
 fun MessageInputPreview() {
     MessageInput(
-        onSend = { _, _ -> }, 
+        onSend = { _ -> },
         onAttachImage = {}
     )
 }

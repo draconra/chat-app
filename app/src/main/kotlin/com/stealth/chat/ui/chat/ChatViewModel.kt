@@ -1,86 +1,140 @@
 package com.stealth.chat.ui.chat
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
+import com.stealth.chat.data.local.SettingsPreferenceManager
+import com.stealth.chat.data.remote.ApiService
+import com.stealth.chat.data.remote.MessageRequest
+import com.stealth.chat.data.remote.MessageResponse
 import com.stealth.chat.model.Chat
 import com.stealth.chat.model.Message
-import kotlinx.coroutines.delay
+import com.stealth.chat.network.ChatWebSocketListener
+import com.stealth.chat.network.WebSocketManager
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.time.Instant
+import javax.inject.Inject
 
-class ChatViewModel : ViewModel() {
+@SuppressLint("NewApi")
+@HiltViewModel
+class ChatViewModel @Inject constructor(
+    private val settingsPrefs: SettingsPreferenceManager,
+    private val apiService: ApiService,
+    private val webSocketManager: WebSocketManager,
+    private val webSocketListener: ChatWebSocketListener
+) : ViewModel() {
 
     private val _chat = MutableStateFlow<Chat?>(null)
     val chat: StateFlow<Chat?> = _chat
 
-    fun setChatInfo(chat: Chat) {
-        val chatWithMessages = chat.copy(
-            message = listOf(
-                Message(1, "Hi from chat ${chat.id}", isSentByMe = false),
-                Message(2, "Hello!", isSentByMe = true)
-            )
-        )
-        _chat.value = chatWithMessages
-    }
-
-    fun sendImage(imageUri: String) {
-        val currentChat = _chat.value
-        if (currentChat != null) {
-            val newMessages = currentChat.message + Message(
-                id = currentChat.message.size + 1,
-                text = "",
-                isSentByMe = true,
-                imageUrl = imageUri
-            )
-            _chat.value = currentChat.copy(message = newMessages)
+    init {
+        viewModelScope.launch {
+            val currentBaseUrl = settingsPrefs.baseUrl.first()
+            webSocketManager.connect(currentBaseUrl)
         }
     }
 
-    fun sendMessage(text: String, disappearAfterMillis: Long? = null) {
-        if (text.isNotBlank()) {
-            val currentChat = _chat.value
-            if (currentChat != null) {
-                val newMsg = Message(
-                    id = currentChat.message.size + 1,
-                    text = text,
-                    isSentByMe = true,
-                    disappearAfterMillis = disappearAfterMillis
-                )
-                val newMessages = currentChat.message + newMsg
-                _chat.value = currentChat.copy(message = newMessages)
+    fun setChatInfo(chat: Chat) {
+        _chat.value = chat
+        fetchChatHistory(chat.id)
+        listenToIncomingMessages(chat.id)
+    }
 
-                disappearAfterMillis?.let {
-                    startDisappearTimer(newMsg.id, it)
+    private fun fetchChatHistory(userId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = apiService.getMessageHistory(userId)
+                if (response.isSuccessful) {
+                    val messages = response.body()?.data?.messages?.map {
+                        Message(
+                            id = it.id,
+                            text = it.content,
+                            isSentByMe = it.receiverId == userId,
+                            disappearAfterMillis = null,
+                            createdAt = it.createdAt
+                        )
+                    }?.sortedBy {
+                        Instant.parse(it.createdAt)
+                    } ?: emptyList()
+
+                    _chat.value = _chat.value?.copy(message = messages)
                 }
-
-                autoReply()
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
 
-    private fun startDisappearTimer(messageId: Int, duration: Long) {
+    fun sendImage(imageUri: String) {
+//        val currentChat = _chat.value
+//        if (currentChat != null) {
+//            val newMessages = currentChat.message + Message(
+//                id = currentChat.message.size + 1,
+//                text = "",
+//                isSentByMe = true,
+//                createdAt = it.createdAt
+//                imageUrl = imageUri
+//            )
+//            _chat.value = currentChat.copy(message = newMessages)
+//        }
+    }
+
+    fun sendMessage(text: String) {
+        val currentChat = _chat.value ?: return
+        if (text.isBlank()) return
+
         viewModelScope.launch {
-            delay(duration)
-            removeMessage(messageId)
+            try {
+                val response = apiService.sendMessage(
+                    MessageRequest(
+                        content = text,
+                        receiverId = currentChat.id
+                    )
+                )
+
+                if (response.isSuccessful) {
+                    fetchChatHistory(currentChat.id)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
-    private fun removeMessage(messageId: Int) {
-        val currentChat = _chat.value ?: return
-        val updatedMessages = currentChat.message.filterNot { it.id == messageId }
-        _chat.value = currentChat.copy(message = updatedMessages)
-    }
+    private fun listenToIncomingMessages(opponentUserId: Int) {
+        val userChannel = webSocketListener.getChannelForUser(opponentUserId)
 
-    private fun autoReply() {
-        val currentChat = _chat.value
-        if (currentChat != null) {
-            val newMessages = currentChat.message + Message(
-                id = currentChat.message.size + 1,
-                text = "This is an auto-reply!",
-                isSentByMe = false
-            )
-            _chat.value = currentChat.copy(message = newMessages)
+        viewModelScope.launch {
+            for (json in userChannel) {
+                try {
+                    val incoming = Gson().fromJson(json, MessageResponse::class.java)
+
+                    val currentChat = _chat.value ?: continue
+                    val opponentId = currentChat.id
+
+                    val newMessage = Message(
+                        id = incoming.id,
+                        text = incoming.content,
+                        isSentByMe = incoming.senderId != opponentId,
+                        createdAt = incoming.createdAt
+                    )
+
+                    val exists = currentChat.message.any { it.id == incoming.id }
+                    if (exists) continue
+
+                    val updatedMessages = currentChat.message + newMessage
+                    _chat.value = currentChat.copy(message = updatedMessages.sortedBy {
+                        Instant.parse(it.createdAt)
+                    })
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
         }
     }
 }
