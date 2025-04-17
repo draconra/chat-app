@@ -23,6 +23,7 @@ class ChatListViewModel @Inject constructor(
     val searchQuery = _searchQuery.asStateFlow()
 
     private val _chats = MutableStateFlow<List<Chat>>(emptyList())
+
     val chats = _chats.asStateFlow()
 
     val filteredChats = combine(_chats, _searchQuery) { chats, query ->
