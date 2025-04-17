@@ -1,86 +1,93 @@
 package com.stealth.chat.ui.chat
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.stealth.chat.data.remote.ApiService
 import com.stealth.chat.model.Chat
 import com.stealth.chat.model.Message
-import kotlinx.coroutines.delay
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.LocalDateTime
+import javax.inject.Inject
 
-class ChatViewModel : ViewModel() {
+@HiltViewModel
+class ChatViewModel @Inject constructor(
+    private val apiService: ApiService
+) : ViewModel() {
 
     private val _chat = MutableStateFlow<Chat?>(null)
     val chat: StateFlow<Chat?> = _chat
 
     fun setChatInfo(chat: Chat) {
-        val chatWithMessages = chat.copy(
-            message = listOf(
-                Message(1, "Hi from chat ${chat.id}", isSentByMe = false),
-                Message(2, "Hello!", isSentByMe = true)
-            )
-        )
-        _chat.value = chatWithMessages
+        _chat.value = chat
+        fetchChatHistory(chat.id)
     }
 
-    fun sendImage(imageUri: String) {
-        val currentChat = _chat.value
-        if (currentChat != null) {
-            val newMessages = currentChat.message + Message(
-                id = currentChat.message.size + 1,
-                text = "",
-                isSentByMe = true,
-                imageUrl = imageUri
-            )
-            _chat.value = currentChat.copy(message = newMessages)
-        }
-    }
+    @SuppressLint("NewApi")
+    private fun fetchChatHistory(userId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = apiService.getMessageHistory(userId)
+                if (response.isSuccessful) {
+                    val messages = response.body()?.data?.messages?.map {
+                        Message(
+                            id = it.id,
+                            text = it.content,
+                            isSentByMe = it.receiverId == userId,
+                            disappearAfterMillis = null,
+                            createdAt = it.createdAt
+                        )
+                    }?.sortedBy {
+                        Instant.parse(it.createdAt)
+                    } ?: emptyList()
 
-    fun sendMessage(text: String, disappearAfterMillis: Long? = null) {
-        if (text.isNotBlank()) {
-            val currentChat = _chat.value
-            if (currentChat != null) {
-                val newMsg = Message(
-                    id = currentChat.message.size + 1,
-                    text = text,
-                    isSentByMe = true,
-                    disappearAfterMillis = disappearAfterMillis
-                )
-                val newMessages = currentChat.message + newMsg
-                _chat.value = currentChat.copy(message = newMessages)
-
-                disappearAfterMillis?.let {
-                    startDisappearTimer(newMsg.id, it)
+                    _chat.value = _chat.value?.copy(message = messages)
                 }
-
-                autoReply()
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
 
-    private fun startDisappearTimer(messageId: Int, duration: Long) {
-        viewModelScope.launch {
-            delay(duration)
-            removeMessage(messageId)
-        }
+    fun sendImage(imageUri: String) {
+//        val currentChat = _chat.value
+//        if (currentChat != null) {
+//            val newMessages = currentChat.message + Message(
+//                id = currentChat.message.size + 1,
+//                text = "",
+//                isSentByMe = true,
+//                createdAt = it.createdAt
+//                imageUrl = imageUri
+//            )
+//            _chat.value = currentChat.copy(message = newMessages)
+//        }
     }
 
-    private fun removeMessage(messageId: Int) {
+    fun sendMessage(text: String) {
         val currentChat = _chat.value ?: return
-        val updatedMessages = currentChat.message.filterNot { it.id == messageId }
-        _chat.value = currentChat.copy(message = updatedMessages)
-    }
+        if (text.isBlank()) return
 
-    private fun autoReply() {
-        val currentChat = _chat.value
-        if (currentChat != null) {
-            val newMessages = currentChat.message + Message(
-                id = currentChat.message.size + 1,
-                text = "This is an auto-reply!",
-                isSentByMe = false
-            )
-            _chat.value = currentChat.copy(message = newMessages)
+        viewModelScope.launch {
+            try {
+                val response = apiService.sendMessage(
+                    com.stealth.chat.data.remote.MessageRequest(
+                        content = text,
+                        receiverId = currentChat.id
+                    )
+                )
+                if (response.isSuccessful) {
+                    fetchChatHistory(currentChat.id)
+                } else {
+                    // Handle error, optionally emit error state
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
+
 }

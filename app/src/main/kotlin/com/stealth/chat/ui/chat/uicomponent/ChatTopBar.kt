@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
@@ -30,7 +31,8 @@ fun ChatTopBar(chatName: String, avatarUrl: String) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(ContextCompat.getColor(context, R.color.teal_700))),
+            .background(Color(ContextCompat.getColor(context, R.color.teal_700)))
+            .statusBarsPadding(),
     ) {
         Row(
             modifier = Modifier

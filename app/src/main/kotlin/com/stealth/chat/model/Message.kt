@@ -5,5 +5,6 @@ data class Message(
     val text: String,
     val isSentByMe: Boolean,
     val imageUrl: String? = null,
-    val disappearAfterMillis: Long? = null
+    val disappearAfterMillis: Long? = null,
+    val createdAt: String
 )

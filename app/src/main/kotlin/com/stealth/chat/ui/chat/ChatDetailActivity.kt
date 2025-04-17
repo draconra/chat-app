@@ -2,17 +2,21 @@ package com.stealth.chat.ui.chat
 
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.google.gson.Gson
 import com.stealth.chat.model.Chat
-import com.stealth.chat.ui.core.BaseActivity
 import com.stealth.chat.ui.theme.ChatAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
-class ChatActivity : BaseActivity() {
+@AndroidEntryPoint
+class ChatDetailActivity : ComponentActivity() {
 
     private val chatViewModel: ChatViewModel by viewModels()
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
@@ -30,20 +34,26 @@ class ChatActivity : BaseActivity() {
         }
 
         // Register image picker
-        imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-            uri?.let {
-                chatViewModel.sendImage(it.toString())
+        imagePickerLauncher =
+            registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+                uri?.let {
+                    chatViewModel.sendImage(it.toString())
+                }
             }
-        }
 
         setContent {
             ChatAppTheme {
-                ChatScreen(
-                    viewModel = chatViewModel,
-                    onAttachImage = {
-                        imagePickerLauncher.launch("image/*")
-                    }
-                )
+                val chatState by chatViewModel.chat.collectAsState()
+
+                chatState?.let { chat ->
+                    ChatScreenContent(
+                        chat = chat,
+                        onSend = chatViewModel::sendMessage,
+                        onAttachImage = {
+                            imagePickerLauncher.launch("image/*")
+                        }
+                    )
+                }
             }
         }
     }
