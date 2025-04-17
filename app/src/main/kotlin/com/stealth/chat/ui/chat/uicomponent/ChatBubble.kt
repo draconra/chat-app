@@ -87,13 +87,4 @@ fun ChatBubble(message: Message) {
             }
         }
     }
-
-    val timeText = try {
-        val instant = Instant.parse(message.createdAt)
-        val formatter = DateTimeFormatter.ofPattern("HH:mm")
-            .withZone(ZoneId.systemDefault())
-        formatter.format(instant)
-    } catch (e: Exception) {
-        ""
-    }
 }
