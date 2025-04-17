@@ -8,6 +8,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
@@ -75,7 +76,7 @@ object NetworkModule {
         listener: ChatWebSocketListener,
         baseUrlProvider: BaseUrlProvider
     ): WebSocket {
-        val wsUrl = kotlinx.coroutines.runBlocking {
+        val wsUrl = runBlocking {
             baseUrlProvider.getBaseUrl().replace("https", "wss") + "/api/chat/ws"
         }
 

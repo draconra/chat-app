@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.stealth.chat.model.Chat
@@ -24,30 +26,32 @@ fun ChatScreenContent(
     onSend: (String) -> Unit,
     onAttachImage: () -> Unit
 ) {
+    val listState = rememberLazyListState()
+
     Scaffold(
         contentWindowInsets = WindowInsets.systemBars,
-        topBar = {
-            ChatTopBar(chatName = chat.name, avatarUrl = chat.avatarUrl)
-        },
+        topBar = { ChatTopBar(chat.name, chat.avatarUrl) },
         bottomBar = {
-            MessageInput(
-                onSend = onSend,
-                onAttachImage = onAttachImage
-            )
+            MessageInput(onSend = onSend, onAttachImage = onAttachImage)
         }
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(
-                    bottom = WindowInsets.ime.asPaddingValues().calculateBottomPadding()
-                ),
+                .padding(bottom = WindowInsets.ime.asPaddingValues().calculateBottomPadding()),
+            state = listState, // ✅ attach state
             reverseLayout = false
         ) {
             items(chat.message) { message ->
                 ChatBubble(message)
             }
+        }
+    }
+
+    LaunchedEffect(chat.message.size) {
+        if (chat.message.isNotEmpty()) {
+            listState.animateScrollToItem(chat.message.lastIndex)
         }
     }
 }
