@@ -46,7 +46,7 @@ class ChatDetailActivity : ComponentActivity() {
                 val chatState by chatViewModel.chat.collectAsState()
 
                 chatState?.let { chat ->
-                    ChatScreenContent(
+                    ChatScreen(
                         chat = chat,
                         onSend = chatViewModel::sendMessage,
                         onAttachImage = {

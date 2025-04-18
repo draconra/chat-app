@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +23,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.stealth.chat.R
+import com.stealth.chat.ui.core.uicomponent.AvatarImage
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.UserCircle
 
 @Composable
 fun ChatTopBar(chatName: String, avatarUrl: String) {
@@ -31,7 +37,7 @@ fun ChatTopBar(chatName: String, avatarUrl: String) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(ContextCompat.getColor(context, R.color.teal_700)))
+            .background(Color(ContextCompat.getColor(context, R.color.red)))
             .statusBarsPadding(),
     ) {
         Row(
@@ -40,18 +46,8 @@ fun ChatTopBar(chatName: String, avatarUrl: String) {
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                model = avatarUrl,
-                contentDescription = "Avatar",
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(Color.Gray)
-            )
-
+            AvatarImage(avatarUrl)
             Spacer(modifier = Modifier.width(12.dp))
-
-            // Chat name
             Text(
                 text = chatName,
                 style = MaterialTheme.typography.titleMedium,
@@ -63,6 +59,6 @@ fun ChatTopBar(chatName: String, avatarUrl: String) {
 
 @Preview
 @Composable
-fun Preview(){
+fun Preview() {
     ChatTopBar("Alice", "")
 }
