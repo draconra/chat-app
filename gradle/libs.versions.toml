@@ -1,6 +1,9 @@
 [versions]
+accompanistPermissions = "0.31.5-beta"
 agp = "8.2.2"
+barcodeScanning = "17.3.0"
 bcrypt = "0.9.0"
+cameraCore = "1.4.2"
 coilCompose = "2.5.0"
 converterGson = "2.9.0"
 datastorePreferences = "1.1.4"
@@ -34,8 +37,14 @@ composeBom = "2024.04.01"
 firebase = "4.4.2"
 
 [libraries]
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCore" }
+androidx-camera-core = { module = "androidx.camera:camera-core", version.ref = "cameraCore" }
+androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraCore" }
+androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraCore" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "barcodeScanning" }
 bcrypt = { module = "at.favre.lib:bcrypt", version.ref = "bcrypt" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }

@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
@@ -19,7 +20,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Qrcode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,7 +34,8 @@ fun ChatTopBar(
     searchQuery: String,
     onQueryChange: (String) -> Unit,
     onToggleSearch: () -> Unit,
-    onNewChatClick: () -> Unit
+    onNewChatClick: () -> Unit,
+    onQrScanClick: () -> Unit
 ) {
     TopAppBar(
         title = {
@@ -50,8 +57,16 @@ fun ChatTopBar(
             if (!isSearchActive) {
                 IconButton(onClick = onNewChatClick) {
                     Icon(
+                        modifier = Modifier.size(20.dp),
                         imageVector = Icons.Default.Email,
                         contentDescription = "New Message"
+                    )
+                }
+                IconButton(onClick = onQrScanClick) {
+                    Icon(
+                        modifier = Modifier.size(20.dp),
+                        imageVector = FontAwesomeIcons.Solid.Qrcode,
+                        contentDescription = "Scan QR"
                     )
                 }
             }
