@@ -2,9 +2,7 @@ package com.stealth.chat.ui.chat
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -47,9 +45,8 @@ fun ChatScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .padding(bottom = WindowInsets.ime.asPaddingValues().calculateBottomPadding()),
-            state = listState, // ✅ attach state
+                .padding(innerPadding),
+            state = listState,
             reverseLayout = false
         ) {
             items(chat.message) { message ->
