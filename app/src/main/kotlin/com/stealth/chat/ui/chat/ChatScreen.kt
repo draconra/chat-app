@@ -1,9 +1,10 @@
 package com.stealth.chat.ui.chat
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,7 +22,7 @@ import com.stealth.chat.ui.chat.uicomponent.ChatTopBar
 import com.stealth.chat.ui.chat.uicomponent.MessageInput
 
 @Composable
-fun ChatScreenContent(
+fun ChatScreen(
     chat: Chat,
     onSend: (String) -> Unit,
     onAttachImage: () -> Unit
@@ -32,15 +33,20 @@ fun ChatScreenContent(
         contentWindowInsets = WindowInsets.systemBars,
         topBar = { ChatTopBar(chat.name, chat.avatarUrl) },
         bottomBar = {
-            MessageInput(onSend = onSend, onAttachImage = onAttachImage)
+            Box(
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .imePadding()
+            ) {
+                MessageInput(onSend = onSend, onAttachImage = onAttachImage)
+            }
         }
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .padding(bottom = WindowInsets.ime.asPaddingValues().calculateBottomPadding()),
-            state = listState, // ✅ attach state
+                .padding(innerPadding),
+            state = listState,
             reverseLayout = false
         ) {
             items(chat.message) { message ->
@@ -59,7 +65,7 @@ fun ChatScreenContent(
 @Preview
 @Composable
 fun ChatScreenPreview() {
-    ChatScreenContent(
+    ChatScreen(
         chat = Chat(
             id = 1,
             name = "Preview User",

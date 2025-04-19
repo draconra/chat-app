@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,6 +29,13 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.stealth.chat.model.Chat
+import com.stealth.chat.ui.core.uicomponent.AvatarImage
+import compose.icons.AllIcons
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Regular
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.regular.Circle
+import compose.icons.fontawesomeicons.solid.UserCircle
 
 @Composable
 fun ChatListScreen(chats: List<Chat>, onChatClick: (Chat) -> Unit) {
@@ -43,30 +52,19 @@ fun ChatListScreen(chats: List<Chat>, onChatClick: (Chat) -> Unit) {
 
 @Composable
 fun ChatItem(chat: Chat, onChatClick: (Chat) -> Unit) {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .clickable { onChatClick(chat) }
-        .padding(10.dp),
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onChatClick(chat) }
+            .padding(10.dp),
         verticalAlignment = Alignment.CenterVertically) {
 
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current).data(chat.avatarUrl).crossfade(true)
-                .build(),
-            contentDescription = "Avatar",
-            modifier = Modifier
-                .size(50.dp)
-                .clip(CircleShape)
-                .background(Color.Gray)
-        )
-
+        AvatarImage(chat.avatarUrl)
         Spacer(modifier = Modifier.width(10.dp))
-
         Column(modifier = Modifier.weight(1f)) {
-            // Chat Name
             Text(
                 text = chat.name, fontWeight = FontWeight.Bold, color = Color.Black
             )
-            // Last Message
             Text(
                 text = chat.lastMessage,
                 color = if (chat.isUnread) Color.Black else Color.Gray,
