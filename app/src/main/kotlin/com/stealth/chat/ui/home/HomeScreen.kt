@@ -18,6 +18,7 @@ import com.stealth.chat.model.Chat
 import com.stealth.chat.ui.chat.list.ChatListScreen
 import com.stealth.chat.ui.chat.list.ChatListViewModel
 import com.stealth.chat.ui.chat.newchat.NewChatBottomSheetDialog
+import com.stealth.chat.ui.chat.qr.QrScannerScreen
 import com.stealth.chat.ui.home.uicomponent.ChatTopBar
 import com.stealth.chat.ui.theme.ChatAppTheme
 
@@ -34,6 +35,7 @@ fun HomeScreen(
     val allContacts by viewModel.chats.collectAsState()
 
     var isNewChatSheetOpen by remember { mutableStateOf(false) }
+    var isQrScannerOpen by remember { mutableStateOf(false) }
 
     ChatAppTheme {
         Scaffold(
@@ -49,6 +51,9 @@ fun HomeScreen(
                     },
                     onNewChatClick = {
                         isNewChatSheetOpen = true
+                    },
+                    onQrScanClick = {
+                        isQrScannerOpen = true
                     }
                 )
 
@@ -66,6 +71,13 @@ fun HomeScreen(
         ) { innerPadding ->
             Box(modifier = Modifier.padding(innerPadding)) {
                 ChatListScreen(chats = chats, onChatClick = onChatClick)
+            }
+        }
+
+        if (isQrScannerOpen) {
+            QrScannerScreen { result ->
+                isQrScannerOpen = false
+                // Handle QR scan result (e.g. join chat, decode URL, etc.)
             }
         }
     }
